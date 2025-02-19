@@ -8,7 +8,7 @@ Here is an example generated from the identifier NFA machine: ![Generated NFA](n
 Current Todos:
 
 - [x] Postfix Regex to NFA
-- [] Concat all NFAs
-- [] NFA to DFA
-- [] DFA Minimization
-- [] Infix to Postfix Regex
+- [ ] Concat all NFAs
+- [ ] NFA to DFA
+- [ ] DFA Minimization
+- [ ] Infix to Postfix Regex
