@@ -1,0 +1,32 @@
+# Lines starting with a # are ignored
+
+# Identifier:
+# Matches a simplified version of: [a-c_][a-c0-2_]*
+#   - The first character is one of: a, b, c, or _
+#     (represented as: a b | c | _ | in postfix)
+#   - The rest are zero or more of: a, b, c, 0, 1, 2, or _
+#     (represented as: a b | c | 0 | 1 | 2 | _ | * )
+# The full expression concatenates these two parts.
+IDENTIFIER ab|c|_|ab|c|0|1|2|_|*.
+
+# Punctuation Tokens:
+
+# DOT_DOT token: Matches ".."
+# (Assuming that the code is later extended to support escapes,
+# you might represent a literal dot as "\." so that the concatenation
+# operator (.) is not confused with a literal.)
+DOT_DOT \. \. .
+
+# SEMICOLON token: Matches ";"
+SEMICOLON ;
+
+# COMMA token: Matches ","
+COMMA ,
+
+# ARROW token: Matches "=>"
+# Here, the concatenation is explicit: '=' followed by '>' then the '.' operator.
+ARROW =>.
+
+# BRACES token: Matches "{}"
+# Concatenates the literal '{' with the literal '}'.
+BRACES {}.
