@@ -13,6 +13,7 @@
         texliveFull  # Full TeX Live distribution for LaTeX typesetting (reports and documentation)
         jdk23        # OpenJDK 23 for Java development
         maven        # Apache Maven for managing Java project dependencies and builds
+        graphviz     # Graphviz for generating graphs for the state diagrams
       ];
   
       shellHook = ''
@@ -23,6 +24,8 @@
           echo "OpenJDK and Maven are available for running java dependencies."
           echo "OpenJDK version: $(java --version | head -n 1)"
           echo "Maven version: $(mvn --version | head -n 1)"
+          echo "Graphviz is available for generating graphs for the state diagrams."
+          echo "Graphviz version: $(dot -V)"
       '';
     };
   };
