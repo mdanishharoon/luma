@@ -41,7 +41,7 @@ public class RegexToNFA {
         }
     }
 
-    static class NFA {
+    public static class NFA {
         State start;
         Set<State> acceptStates;
 
@@ -212,7 +212,7 @@ public class RegexToNFA {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public static void generateNFAMachines(String[] args) {
+    public static NFA generateNFAMachines(String[] args) {
         // Read the regex rules from a file named "regex_rules".
         // Each line is assumed to have the format:
         // TOKEN_NAME REGEX_IN_POSTFIX
@@ -261,6 +261,8 @@ public class RegexToNFA {
         }
         // Generate a DOT file for the merged NFA.
         mergedNFA.generateDotFile("_merged");
+
+        return mergedNFA;
     }
 
     public static void main(String[] args) {
