@@ -1,0 +1,28 @@
+digraph DFA {
+    rankdir=LR;
+    size="8,5";
+    node [shape = doublecircle, style=filled, fillcolor=lightblue];
+    q6 [label="q6\nIDENTIFIER"];
+    q7 [label="q7\nKEYWORD"];
+    node [shape = circle, style=filled, fillcolor=lightgrey];
+    q9 [label="q9"];
+    q5 [label="q5"];
+    q8 [label="q8"];
+    q9 -> q9 [label="a"];
+    q9 -> q9 [label="f"];
+    q9 -> q9 [label="i"];
+    q5 -> q9 [label="a"];
+    q5 -> q7 [label="f"];
+    q5 -> q9 [label="i"];
+    q6 -> q6 [label="a"];
+    q6 -> q9 [label="f"];
+    q6 -> q9 [label="i"];
+    q7 -> q9 [label="a"];
+    q7 -> q9 [label="f"];
+    q7 -> q9 [label="i"];
+    q8 -> q6 [label="a"];
+    q8 -> q9 [label="f"];
+    q8 -> q5 [label="i"];
+    start [shape=point];
+    start -> q8;
+}

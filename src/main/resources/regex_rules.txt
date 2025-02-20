@@ -31,5 +31,9 @@
 # Concatenates the literal '{' with the literal '}'.
 # BRACES {}.
 
-RULE1 ab|c|_|01|2|_|.
-RULE2 $ab|0|1|*.
+# RULE1 ab|c|_|01|2|_|.
+# RULE2 $ab|0|1|*.
+
+# Current rules to test lexer functionality
+KEYWORD if.
+IDENTIFIER aa*.
