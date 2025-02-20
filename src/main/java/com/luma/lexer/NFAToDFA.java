@@ -213,14 +213,17 @@ public class NFAToDFA {
                 currentDFA.transitions.put(symbol, nextDFA);
             }
         }
-        return new DFA(dfaStart, allDFAStates);
+
+        DFA dfa = new DFA(dfaStart, allDFAStates);
+        
+        return dfa;
     }
 
     // For testing purposes.
     public static void main(String[] args) {
         // For example, build an NFA using RegexToNFA (which sets token types on its accept states)
         // and convert it to a DFA. The DFA will now report all token types in each accept state.
-        RegexToNFA.NFA nfa = RegexToNFA.generateNFAMachines(args); // example postfix regex
+        RegexToNFA.NFA nfa = RegexToNFA.generateNFAMachines(args);
         DFA dfa = convert(nfa);
         dfa.toGraphviz("dfa.dot");
     }

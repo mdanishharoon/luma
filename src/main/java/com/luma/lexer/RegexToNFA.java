@@ -234,17 +234,15 @@ public class RegexToNFA {
                 }
                 String tokenName = parts[0];
                 String regex = parts[1].trim();
+                
                 // Generate the NFA for this regex.
                 NFA nfa = regexToNFA(regex);
+                
                 // Set the token type for each accept state.
                 for (State accept : nfa.acceptStates) {
                     accept.tokenType = tokenName;
                 }
-                System.out.println("Generated NFA for token: " + tokenName);
-                System.out.println("  Start state: " + nfa.start.id);
-                for (State accept : nfa.acceptStates) {
-                    System.out.println("  Accept state: " + accept.id + " with token type: " + accept.tokenType);
-                }
+                
                 // (Optional) Generate DOT file for each visualization.
                 // nfa.generateDotFile(tokenName);
                 nfaList.add(nfa);
@@ -255,10 +253,7 @@ public class RegexToNFA {
 
         // Merge all individual NFAs into a single large NFA.
         NFA mergedNFA = mergeNFAs(nfaList);
-        System.out.println("Merged NFA created with start state: " + mergedNFA.start.id);
-        for (State accept : mergedNFA.acceptStates) {
-            System.out.println("Merged accept state: " + accept.id + " with token type: " + accept.tokenType);
-        }
+
         // Generate a DOT file for the merged NFA.
         mergedNFA.generateDotFile("_merged");
 
