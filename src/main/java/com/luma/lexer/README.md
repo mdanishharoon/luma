@@ -5,10 +5,12 @@ Each machine also comes with the `.dot` files to render a graphical representati
 
 Here is an example NFA machine generated from a few basic regex rules: ![Generated NFA](nfa_merged.svg)
 
+Here is an example DFA machine generated from a few basic regex rules: ![Generated DFA](dfa.svg)
+
 Current Todos:
 
 - [x] Postfix Regex to NFA
 - [x] Concat all NFAs
-- [ ] NFA to DFA
+- [x] NFA to DFA
 - [ ] DFA Minimization
 - [ ] Infix to Postfix Regex

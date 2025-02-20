@@ -1,0 +1,19 @@
+digraph NFA {
+    node [shape=circle, style=filled, fillcolor=lightgrey];
+    12 -> 0 [label="ε", color=red];
+    0 -> 1 [label="a", color=black];
+    1 -> 2 [label="ε", color=red];
+    2 -> 3 [label="b", color=black];
+    3 -> 10 [label="ε", color=red];
+    10 -> 8 [label="ε", color=red];
+    8 -> 4 [label="ε", color=red];
+    4 -> 5 [label="a", color=black];
+    5 -> 9 [label="ε", color=red];
+    9 -> 8 [label="ε", color=red];
+    9 -> 11 [label="ε", color=red];
+    8 -> 6 [label="ε", color=red];
+    6 -> 7 [label="b", color=black];
+    7 -> 9 [label="ε", color=red];
+    10 -> 11 [label="ε", color=red];
+    11 [shape=doublecircle, fillcolor=lightblue];
+}

@@ -1,0 +1,21 @@
+digraph DFA {
+    rankdir=LR;
+    size="8,5";
+    node [shape = doublecircle, style=filled, fillcolor=lightblue];
+    q4 [label="q4\nTEST"];
+    q3 [label="q3\nTEST"];
+    q2 [label="q2\nTEST"];
+    node [shape = circle, style=filled, fillcolor=lightgrey];
+    q0 [label="q0"];
+    q1 [label="q1"];
+    q4 -> q3 [label="a"];
+    q4 -> q4 [label="b"];
+    q0 -> q1 [label="a"];
+    q1 -> q2 [label="b"];
+    q3 -> q3 [label="a"];
+    q3 -> q4 [label="b"];
+    q2 -> q3 [label="a"];
+    q2 -> q4 [label="b"];
+    start [shape=point];
+    start -> q0;
+}
