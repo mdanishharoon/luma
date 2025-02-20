@@ -21,10 +21,10 @@ public class RegexToNFA {
     // Represents a state in the NFA.
     static class State {
         int id;
-        // Transitions on a character (non-epsilon).
         Map<Character, List<State>> transitions = new HashMap<>();
-        // Epsilon transitions (transitions that do not consume a character).
         List<State> epsilonTransitions = new ArrayList<>();
+        // This field is used to mark accept states with the token type (easier for identification later)
+        String tokenType = null;
 
         State() {
             this.id = stateCount++;
@@ -41,36 +41,45 @@ public class RegexToNFA {
         }
     }
 
-    // Represents an NFA with a start state and an accept state.
     static class NFA {
         State start;
-        State accept;
+        Set<State> acceptStates;
 
+        // Constructor for a single accept state.
         NFA(State start, State accept) {
             this.start = start;
-            this.accept = accept;
+            this.acceptStates = new HashSet<>();
+            this.acceptStates.add(accept);
+        }
+
+        // Constructor for multiple accept states.
+        NFA(State start, Set<State> acceptStates) {
+            this.start = start;
+            this.acceptStates = acceptStates;
         }
 
         @SuppressWarnings("CallToPrintStackTrace")
         public void generateDotFile(String tokenName) {
             String file_path = "/home/arqqm/luma/src/main/java/com/luma/lexer/nfa" + tokenName + ".dot";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {
-            writer.write("digraph NFA {\n");
-            writer.write("    node [shape=circle, style=filled, fillcolor=lightgrey];\n");
-        
-            // Write states and their transitions
-            writeDotTransitions(writer, this.start);
-        
-            // Mark the accept state with a double circle and a different color
-            writer.write("    " + this.accept.id + " [shape=doublecircle, fillcolor=lightblue];\n");
-        
-            writer.write("}\n");
+                writer.write("digraph NFA {\n");
+                writer.write("    node [shape=circle, style=filled, fillcolor=lightgrey];\n");
+            
+                writeDotTransitions(writer, this.start);
+            
+                for (State accept : this.acceptStates) {
+                    writer.write("    " + accept.id + " [shape=doublecircle, fillcolor=lightblue];\n");
+                }
+            
+                writer.write("}\n");
+
             } catch (IOException e) {
-            e.printStackTrace();
+                e.printStackTrace();
             }
         }
         
         private static void writeDotTransitions(BufferedWriter writer, State state) throws IOException {
+            
             // Use a set to avoid printing the same transition multiple times
             Set<State> visitedStates = new HashSet<>();
         
@@ -97,7 +106,7 @@ public class RegexToNFA {
             traverseState(writer, nextState, visitedStates);
             }
         }
-        }
+    }
 
     /**
      * Constructs an NFA from a regex in postfix notation using Thompson's construction.
@@ -115,15 +124,13 @@ public class RegexToNFA {
             if (Character.isWhitespace(token)) {
                 continue;
             }
-            // Check for an escape character.
+            // Check for an escape character in the regex
             if (token == '\\') {
                 if (i + 1 < regex.length()) {
-                    // Increment to get the escaped character.
                     token = regex.charAt(++i);
-                    // Treat the escaped character as a literal.
                     State start = new State();
                     State accept = new State();
-                    start.addTransition(token == ' ' ? ' ' : token, accept);
+                    start.addTransition(token, accept);
                     stack.push(new NFA(start, accept));
                     continue;
                 } else {
@@ -139,8 +146,10 @@ public class RegexToNFA {
                     State accept = new State();
                     start.addEpsilonTransition(nfa.start);
                     start.addEpsilonTransition(accept);
-                    nfa.accept.addEpsilonTransition(nfa.start);
-                    nfa.accept.addEpsilonTransition(accept);
+                    for (State as : nfa.acceptStates) {
+                        as.addEpsilonTransition(nfa.start);
+                        as.addEpsilonTransition(accept);
+                    }
                     stack.push(new NFA(start, accept));
                     break;
                 }
@@ -148,8 +157,11 @@ public class RegexToNFA {
                     // Concatenation: Pop two NFAs and connect them.
                     NFA nfa2 = stack.pop();
                     NFA nfa1 = stack.pop();
-                    nfa1.accept.addEpsilonTransition(nfa2.start);
-                    stack.push(new NFA(nfa1.start, nfa2.accept));
+                    for (State as : nfa1.acceptStates) {
+                        as.addEpsilonTransition(nfa2.start);
+                    }
+                    // The accept states of the combined NFA are those from nfa2.
+                    stack.push(new NFA(nfa1.start, nfa2.acceptStates));
                     break;
                 }
                 case '|': {
@@ -160,8 +172,12 @@ public class RegexToNFA {
                     State accept = new State();
                     start.addEpsilonTransition(nfa1.start);
                     start.addEpsilonTransition(nfa2.start);
-                    nfa1.accept.addEpsilonTransition(accept);
-                    nfa2.accept.addEpsilonTransition(accept);
+                    for (State as : nfa1.acceptStates) {
+                        as.addEpsilonTransition(accept);
+                    }
+                    for (State as : nfa2.acceptStates) {
+                        as.addEpsilonTransition(accept);
+                    }
                     stack.push(new NFA(start, accept));
                     break;
                 }
@@ -180,22 +196,37 @@ public class RegexToNFA {
         return stack.pop();
     }
 
+    /**
+     * Merges multiple NFAs into a single NFA.
+     * The merged NFA has a new start state with epsilon transitions to each individual NFA's start state.
+     */
+    static NFA mergeNFAs(List<NFA> nfaList) {
+        State newStart = new State();
+        Set<State> mergedAccepts = new HashSet<>();
+
+        for (NFA nfa : nfaList) {
+            newStart.addEpsilonTransition(nfa.start);
+            mergedAccepts.addAll(nfa.acceptStates);
+        }
+        return new NFA(newStart, mergedAccepts);
+    }
+
     @SuppressWarnings("CallToPrintStackTrace")
     public static void generateNFAMachines(String[] args) {
         // Read the regex rules from a file named "regex_rules".
         // Each line is assumed to have the format:
         // TOKEN_NAME REGEX_IN_POSTFIX
-        
-        // TODO: Implement a dynamic way to get the regex_rules file.
-        // The file should be placed at src/main/resources/regex_rules.txt
-        // try (BufferedReader br = new BufferedReader(new InputStreamReader(RegexToNFA.class.getResourceAsStream("/regex_rules.txt")))) {
-
+        // The file is assumed to be placed at src/main/resources/regex_rules.txt.
         String file_path = "/home/arqqm/luma/src/main/resources/regex_rules.txt";
+        List<NFA> nfaList = new ArrayList<>();
+        
         try (BufferedReader br = new BufferedReader(new FileReader(file_path))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // Skip empty lines or lines starting with '#' (comments).
-                if (line.trim().isEmpty() || line.trim().startsWith("#")) continue;
+                if (line.trim().isEmpty() || line.trim().startsWith("#"))
+                    continue;
+                
                 String[] parts = line.split("\\s+", 2);
                 if (parts.length != 2) {
                     System.err.println("Invalid rule format: " + line);
@@ -205,14 +236,31 @@ public class RegexToNFA {
                 String regex = parts[1].trim();
                 // Generate the NFA for this regex.
                 NFA nfa = regexToNFA(regex);
+                // Set the token type for each accept state.
+                for (State accept : nfa.acceptStates) {
+                    accept.tokenType = tokenName;
+                }
                 System.out.println("Generated NFA for token: " + tokenName);
                 System.out.println("  Start state: " + nfa.start.id);
-                System.out.println("  Accept state: " + nfa.accept.id);
-                nfa.generateDotFile(tokenName);
+                for (State accept : nfa.acceptStates) {
+                    System.out.println("  Accept state: " + accept.id + " with token type: " + accept.tokenType);
+                }
+                // (Optional) Generate DOT file for each visualization.
+                // nfa.generateDotFile(tokenName);
+                nfaList.add(nfa);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Merge all individual NFAs into a single large NFA.
+        NFA mergedNFA = mergeNFAs(nfaList);
+        System.out.println("Merged NFA created with start state: " + mergedNFA.start.id);
+        for (State accept : mergedNFA.acceptStates) {
+            System.out.println("Merged accept state: " + accept.id + " with token type: " + accept.tokenType);
+        }
+        // Generate a DOT file for the merged NFA.
+        mergedNFA.generateDotFile("_merged");
     }
 
     public static void main(String[] args) {
