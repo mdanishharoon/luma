@@ -225,6 +225,6 @@ public class NFAToDFA {
         // and convert it to a DFA. The DFA will now report all token types in each accept state.
         RegexToNFA.NFA nfa = RegexToNFA.generateNFAMachines(args);
         DFA dfa = convert(nfa);
-        dfa.toGraphviz("dfa.dot");
+        dfa.toGraphviz("out/dfa.dot");
     }
 }

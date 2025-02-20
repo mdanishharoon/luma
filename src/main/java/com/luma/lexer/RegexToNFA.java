@@ -60,7 +60,7 @@ public class RegexToNFA {
 
         @SuppressWarnings("CallToPrintStackTrace")
         public void generateDotFile(String tokenName) {
-            String file_path = "/home/arqqm/luma/src/main/java/com/luma/lexer/nfa" + tokenName + ".dot";
+            String file_path = "/home/arqqm/luma/src/main/java/com/luma/lexer/out/nfa" + tokenName + ".dot";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file_path))) {
                 writer.write("digraph NFA {\n");
                 writer.write("    node [shape=circle, style=filled, fillcolor=lightgrey];\n");

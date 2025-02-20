@@ -5,15 +5,15 @@ Each machine also comes with the `.dot` files to render a graphical representati
 
 Here is an example NFA machine generated from a few basic regex rules
 
-![Generated NFA](nfa_merged.svg)
+![Generated NFA](out/nfa_merged.svg)
 
 Here is an example DFA machine generated from the same regex rules:
 
-![Generated DFA](dfa.svg)
+![Generated DFA](out/dfa.svg)
 
 Here is an example DFA machine fully minimized WITH a sink state formed from the same regex rules:
 
-![Minimized DFA](minimized_dfa.svg)
+![Minimized DFA](out/minimized_dfa.svg)
 
 Current Todos:
 
@@ -21,4 +21,5 @@ Current Todos:
 - [x] Concat all NFAs
 - [x] NFA to DFA
 - [x] DFA Minimization
+- [ ] Clean up and refactoring classes
 - [ ] Infix to Postfix Regex

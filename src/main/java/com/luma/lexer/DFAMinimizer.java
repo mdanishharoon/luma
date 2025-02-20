@@ -255,6 +255,6 @@ public class DFAMinimizer {
         NFAToDFA.DFA dfa = NFAToDFA.convert(nfa);
         dfa.toGraphviz("dfa.dot");
         NFAToDFA.DFA minimized = minimize(dfa);
-        minimized.toGraphviz("minimized_dfa.dot");
+        minimized.toGraphviz("out/minimized_dfa.dot");
     }
 }
